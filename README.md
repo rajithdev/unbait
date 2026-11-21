@@ -65,7 +65,7 @@ Things that keep it cheap and safe to run:
 ## Privacy
 
 - **Rules only (default):** nothing leaves your browser.
-- **Rules + AI:** only the text of posts the rules couldn't decide is sent, with tagged people replaced by "@someone". Author names, your profile and your messages are never read.
+- **Rules + AI:** uses the hosted server unless you set your own under **Server** in the popup. Only the text of posts the rules couldn't decide is sent, with tagged people replaced by "@someone". Author names, your profile and your messages are never read.
 - **The server stores no post text**, only a SHA-256 hash with the verdict, plus counters. Logs contain counts and timings, never text.
 - **Permissions:** `storage`, and access to `linkedin.com`. Nothing else, enforced by an [end-to-end test](apps/extension/e2e/extension.e2e.ts).
 
@@ -90,7 +90,7 @@ It prints precision, recall, the posts it got wrong and the cost per 1,000 posts
 
 ## Install
 
-1. Download `unbait-extension.zip` from the [latest release](../../releases/latest) and unzip it.
+1. Download `unbait-extension.zip` from the [latest release](../../releases/latest) and unzip it. Release builds use the hosted server at [api-production-8377d0da.up.railway.app](https://api-production-8377d0da.up.railway.app) for Rules + AI mode.
 2. Open `chrome://extensions`, switch on **Developer mode**, click **Load unpacked** and pick the unzipped folder.
 3. Open LinkedIn. Bait posts fold away as you scroll; the Unbait button in the toolbar shows counts and settings.
 
