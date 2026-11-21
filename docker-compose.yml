@@ -1,0 +1,22 @@
+# Local server with Postgres:  ANTHROPIC_API_KEY=... docker compose up
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_PASSWORD: unbait
+      POSTGRES_DB: unbait
+    volumes: [db:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+  server:
+    build: .
+    ports: ["8787:8787"]
+    environment:
+      DATABASE_URL: postgres://postgres:unbait@db:5432/unbait
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      UNBAIT_MODEL: ${UNBAIT_MODEL:-claude-opus-5-5}
+    depends_on:
+      db: { condition: service_healthy }
+volumes:
+  db:

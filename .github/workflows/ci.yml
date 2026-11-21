@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_PASSWORD: test
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+        env:
+          TEST_DATABASE_URL: postgres://postgres:test@localhost:5432/postgres
+      - name: Rules eval (held-out split)
+        run: pnpm eval --split test
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: End-to-end (extension in Chromium)
+        run: pnpm e2e
+      - name: Build the extension
+        run: pnpm --filter @unbait/extension build -- --zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unbait-extension
+          path: apps/extension/unbait-extension.zip
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t unbait-server .
+      - name: Boot and check /health
+        run: |
+          docker run -d --name unbait -p 8787:8787 unbait-server
+          for i in $(seq 1 20); do curl -fsS localhost:8787/health && exit 0; sleep 1; done
+          docker logs unbait; exit 1

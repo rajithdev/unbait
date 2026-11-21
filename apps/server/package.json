@@ -1,0 +1,23 @@
+{
+  "name": "@unbait/server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "~1.11.0",
+    "@hono/node-server": "~2.1.9",
+    "@unbait/core": "workspace:*",
+    "hono": "^4.13.19",
+    "pg": "^8.23.1",
+    "tsx": "^4.23.15",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.23.1"
+  }
+}

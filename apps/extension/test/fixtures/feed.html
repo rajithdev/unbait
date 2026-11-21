@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" data-color-scheme="light">
+<head><meta charset="utf-8"><title>Feed | LinkedIn (test fixture)</title>
+<style>
+  body { font-family: sans-serif; background: #f4f2ee; margin: 0; }
+  [role=list] { max-width: 560px; margin: 20px auto; display: grid; gap: 8px; }
+  [role=listitem] { background: #fff; border-radius: 8px; padding: 12px 16px; }
+  .author { font-weight: 600; margin-bottom: 6px; }
+  .actions { display: flex; gap: 16px; color: #666; margin-top: 8px; font-size: 13px; }
+</style></head>
+<body>
+<!-- Mirrors the structure of LinkedIn's 2026 feed: role=list feed, role=listitem posts,
+     text in data-testid="expandable-text-box" with <br> line breaks, comments nested. -->
+<div role="list" componentkey="container-update-list_mainFeed" data-testid="mainFeed">
+  <div componentkey="a1"><div role="listitem" componentkey="post-1" id="post-gate">
+    <div class="author">Growth Coach</div>
+    <p componentkey="t1"><span data-testid="expandable-text-box">I put my entire cold email playbook into one PDF.<br><br>Comment "PLAYBOOK" and I'll send it to you.</span></p>
+    <button data-testid="expandable-text-button">… more</button>
+    <div class="actions"><span>Like</span><span>Comment</span><span>Repost</span></div>
+  </div></div>
+  <div componentkey="a2"><div role="listitem" componentkey="post-2" id="post-real">
+    <div class="author">Platform Engineer</div>
+    <p componentkey="t2"><span data-testid="expandable-text-box">We moved our CI to sharded runners with <a href="https://www.linkedin.com/in/jane-doe-123/">Jane Doe</a>.<br>Build times went from 22 to 6 minutes. Writeup: <a href="https://example.com/ci">example.com/ci</a></span></p>
+    <div class="actions"><span>Like</span><span>Comment</span></div>
+    <div data-testid="xyz-commentList">
+      <div role="listitem" componentkey="urn:li:comment:(activity:1,2)"><p><span data-testid="expandable-text-box">Agree?</span></p></div>
+    </div>
+  </div></div>
+  <div componentkey="a3"><div role="listitem" componentkey="post-3" id="post-agree">
+    <div class="author">Thought Leader</div>
+    <p componentkey="t3"><span data-testid="expandable-text-box">Hard work beats talent when talent doesn't work hard.<br><br>Agree?</span></p>
+  </div></div>
+  <div componentkey="a4"><div role="listitem" componentkey="post-4" id="post-subtle">
+    <div class="author">Founder</div>
+    <p componentkey="t4"><span data-testid="expandable-text-box">Nobody ever tells you the real reason startups fail.<br>It isn't money.<br>It isn't the market.<br>It's something much simpler.</span></p>
+  </div></div>
+  <div componentkey="a5"><div role="listitem" componentkey="post-5" id="post-image-only">
+    <div class="author">Photographer</div>
+    <img alt="a photo" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=">
+  </div></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Unbait server</title>
+<meta name="description" content="The API behind Unbait, a browser extension that folds away engagement-bait posts in your LinkedIn feed." />
+<style>
+  :root { --bg: #f7f6f3; --card: #fff; --ink: #1d2226; --muted: #5e6670; --line: #e3e2df; --accent: #4f3fe0; color-scheme: light dark; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #111417; --card: #1b1f23; --ink: #e9e9e9; --muted: #a7acb1; --line: #2e363e; --accent: #a99bff; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  main { max-width: 680px; margin: 0 auto; padding: 48px 16px 64px; }
+  h1 { font-size: 34px; line-height: 1.15; margin: 0 0 8px; letter-spacing: -.02em; }
+  .lede { color: var(--muted); font-size: 18px; margin: 0 0 32px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 0 0 32px; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .stat b { display: block; font-size: 26px; font-variant-numeric: tabular-nums; }
+  .stat span { color: var(--muted); font-size: 13px; }
+  h2 { font-size: 18px; margin: 32px 0 8px; }
+  a { color: var(--accent); }
+  code { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; font-size: 14px; }
+  footer { color: var(--muted); font-size: 14px; margin-top: 40px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Unbait</h1>
+  <p class="lede">A browser extension that folds away engagement bait in your LinkedIn feed: comment-to-get giveaways, "Agree?" posts, cliffhanger stories and hype lists. This is its API server.</p>
+
+  <div class="stats" aria-live="polite">
+    <div class="stat"><b id="checked">–</b><span>posts checked by the AI</span></div>
+    <div class="stat"><b id="hidden">–</b><span>bait posts caught</span></div>
+    <div class="stat"><b id="reports">–</b><span>"not bait" reports</span></div>
+  </div>
+
+  <h2>Get the extension</h2>
+  <p>Download it from the <a href="https://github.com/rajithdev/unbait/releases/latest">latest release</a>, or read the code on <a href="https://github.com/rajithdev/unbait">GitHub</a>.</p>
+
+  <h2>What this server sees</h2>
+  <p>Only the text of posts the extension's local rules couldn't decide, and only when you switch on "Rules + AI". Names of people tagged in a post are removed before sending. The server keeps a hash of each post and its verdict, never the text. <a href="/privacy">Privacy details</a>.</p>
+
+  <footer>API: <code>POST /v1/classify</code> · <code>POST /v1/report</code> · <code>GET /v1/stats</code> · <code>GET /health</code></footer>
+</main>
+<script>
+  fetch('/v1/stats').then((r) => r.json()).then((s) => {
+    const fmt = (n) => Number(n).toLocaleString('en');
+    document.getElementById('checked').textContent = fmt(s.postsChecked);
+    document.getElementById('hidden').textContent = fmt(Object.values(s.hidden).reduce((a, b) => a + b, 0));
+    document.getElementById('reports').textContent = fmt(s.reports);
+  }).catch(() => {});
+</script>
+</body>
+</html>

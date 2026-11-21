@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Unbait privacy</title>
+<style>
+  :root { --bg: #f7f6f3; --ink: #1d2226; --muted: #5e6670; --accent: #4f3fe0; color-scheme: light dark; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #111417; --ink: #e9e9e9; --muted: #a7acb1; --accent: #a99bff; } }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  main { max-width: 680px; margin: 0 auto; padding: 48px 16px 64px; }
+  h1 { font-size: 30px; margin: 0 0 16px; }
+  h2 { font-size: 18px; margin: 28px 0 6px; }
+  a { color: var(--accent); }
+  li { margin: 4px 0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Privacy</h1>
+  <p>Unbait is open source, so everything below can be checked in the <a href="https://github.com/rajithdev/unbait">code</a>.</p>
+
+  <h2>Rules only (the default)</h2>
+  <p>Posts are checked by pattern rules inside your browser. Nothing is sent anywhere.</p>
+
+  <h2>Rules + AI</h2>
+  <ul>
+    <li>Only posts the rules can't decide are sent to this server, as plain text.</li>
+    <li>Names of people tagged in a post are replaced with "@someone" before sending. Author names, profile details, your own account and your messages are never read or sent.</li>
+    <li>The server sends the text to Anthropic's Claude API to classify it, and keeps only a SHA-256 hash of the text with the verdict, so the same post isn't classified twice. The text itself is not stored or logged.</li>
+    <li>Your extension sends a random install id, used only for rate limits; the server stores a hash of it.</li>
+    <li>"Not bait?" reports store the post's hash, what Unbait decided, and the hashed install id.</li>
+  </ul>
+
+  <h2>In your browser</h2>
+  <p>The extension stores your settings, its counters, and hashes of posts it has seen, in Chrome's extension storage. It only runs on linkedin.com and asks for no other permissions.</p>
+
+  <p><a href="/">Back</a></p>
+</main>
+</body>
+</html>
