@@ -56,8 +56,8 @@ flowchart LR
 
 Things that keep it cheap and safe to run:
 
-- **The system prompt never changes,** so it's served from Claude's prompt cache on every call after the first.
-- **A daily AI budget** (`UNBAIT_DAILY_AI_POSTS`) caps spending; past it the server quietly falls back to rules.
+- **The system prompt never changes,** so calls close together can reuse Claude's prompt cache (not yet measured).
+- **A daily AI budget** (`UNBAIT_DAILY_AI_POSTS`) limits spending; past it the server falls back to rules. It is a soft limit: simultaneous requests can pass it, and failed AI calls are not counted. Set a spend limit with the AI provider too.
 - **Failures show the post.** If the AI or the server is down, posts stay visible; Unbait never hides something it hasn't decided on.
 - **Post text is untrusted.** The prompt tells the model never to follow instructions inside a post, and posts are sent as JSON strings with server-side ids, not the client's.
 - **Rate limits** per install and per IP, request size limits, and CORS that only admits extension origins.
@@ -65,13 +65,13 @@ Things that keep it cheap and safe to run:
 ## Privacy
 
 - **Rules only (default):** nothing leaves your browser.
-- **Rules + AI:** uses the hosted server unless you set your own under **Server** in the popup. Only the text of posts the rules couldn't decide is sent, with tagged people replaced by "@someone". Author names, your profile and your messages are never read.
+- **Rules + AI:** uses the hosted server unless you set your own under **Server** in the popup. Only the text of posts the rules couldn't decide is sent, with linked tags of people replaced by "@someone". Names typed as plain text in a post are sent as written. Author names, your profile and your messages are not sent. The hosted server's AI is currently off, so this mode adds nothing over rules there yet.
 - **The server stores no post text**, only a SHA-256 hash with the verdict, plus counters. Logs contain counts and timings, never text.
 - **Permissions:** `storage`, and access to `linkedin.com`. Nothing else, enforced by an [end-to-end test](apps/extension/e2e/extension.e2e.ts).
 
 ## How well it works
 
-A hand-labelled set of [105 fictional posts](evals/dataset.jsonl) (15 per bait category, 45 real posts), 44 of them deliberately hard: real posts that look like bait (a hiring post, a sincere "Thoughts?" question, a story with real numbers) and bait that doesn't look like the stereotype. Odd-numbered posts were used while writing the rules; even-numbered posts are held out.
+A set of [105 fictional posts, written and labelled by an AI model](evals/dataset.jsonl) (15 per bait category, 45 real posts), 44 of them deliberately hard: real posts that look like bait (a hiring post, a sincere "Thoughts?" question, a story with real numbers) and bait that doesn't look like the stereotype. Odd-numbered posts were used while tuning the rules; even-numbered posts are held out (five of them were read in a spot check before tuning). The set is small and synthetic, and nothing has been measured on real posts yet.
 
 **Rules only, held-out half** ([full results](evals/RESULTS.md)):
 
@@ -80,7 +80,7 @@ A hand-labelled set of [105 fictional posts](evals/dataset.jsonl) (15 per bait c
 | All posts | 100% | 36% | 0 of 22 |
 | Hard cases | 100% | 13% | 0 of 12 |
 
-The rules are deliberately conservative: they never hid a real post, and catch the obvious third of the bait for free. Everything else is the AI's job, and the eval runner measures that too:
+The rules are deliberately conservative: on this set they hid no real post, and they catch about a third of the bait for free. The rest is the AI's job. **The AI has not been measured yet;** the eval runner does that:
 
 ```bash
 ANTHROPIC_API_KEY=... pnpm eval --ai --split test --write
@@ -146,7 +146,7 @@ evals               labelled dataset and eval runner
 ## Limitations
 
 - **LinkedIn changes its page often.** The selectors live in one place ([`extract.ts`](apps/extension/src/extract.ts)) and cover both the current and the older feed layout, but a redesign can break them until they're updated.
-- **English only.** Rules match English phrasing; the AI handles other languages but they aren't in the eval set yet.
+- **English only.** Rules match English phrasing; other languages are untested.
 - **"Bait" is a judgement call.** The categories are defined narrowly and the AI is told that hiding a real post is worse than missing a bait one, but it will sometimes disagree with you. That's what Show and Not bait? are for.
 
 ## Disclaimer

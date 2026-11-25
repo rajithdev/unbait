@@ -26,9 +26,9 @@
   <h2>Rules + AI</h2>
   <ul>
     <li>Only posts the rules can't decide are sent to this server, as plain text.</li>
-    <li>Names of people tagged in a post are replaced with "@someone" before sending. Author names, profile details, your own account and your messages are never read or sent.</li>
+    <li>Linked tags of people are replaced with "@someone" before sending. Names typed as plain text in a post are sent as written. Author names, profile details and your messages are not sent.</li>
     <li>The server sends the text to Anthropic's Claude API to classify it, and keeps only a SHA-256 hash of the text with the verdict, so the same post isn't classified twice. The text itself is not stored or logged.</li>
-    <li>Your extension sends a random install id, used only for rate limits; the server stores a hash of it.</li>
+    <li>Your extension sends a random install id, used for rate limits and reports; the server stores a hash of it with reports. Your IP address is held in memory for rate limits.</li>
     <li>"Not bait?" reports store the post's hash, what Unbait decided, and the hashed install id.</li>
   </ul>
 
